@@ -24,6 +24,20 @@ variable "enable_dns_support" {
 }
 
 
+variable "enable_single_nat" {
+  description = "Should be true to create NAT gateway for private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "enable_ha_nat" {
+  description = "Should be true to create NAT gateway for private subnets"
+  type        = bool
+  default     = false
+}
+
+
+
 variable "public_subnets" {
   description = "Mapping AZ and Public subnets"
   type        = map(any)
