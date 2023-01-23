@@ -1,7 +1,7 @@
 locals {
   vpc_id      = aws_vpc.this_vpc.id
-  public_azs  = keys(var.public_subnets)
-  private_azs = keys(var.private_subnets)
+  public_subnets_only  = values(var.public_subnets)
+  private_subnets_only = values(var.private_subnets)
 }
 
 ############################################################################
@@ -33,17 +33,17 @@ resource "aws_subnet" "public" {
 
     /*
     How this is working..
-    In the above "locals", we have extracted the "keys" of the "azs" using "keys" function.
+    In the above "locals", we have extracted the "suvnets" na using "values" function.
     
     Our target --
     Name = vpc_name-public_subnet-1
     Name = vpc_name-public_subnet-2
 
-    For getting the index we use "index" function 
+    For getting the index as a counter we are using "index" function 
 
     */
 
-    "Name" = "${var.vpc_name}-public_subnet-${index(local.public_azs, each.key) + 1}"
+    "Name" = "${var.vpc_name}-public_subnet-${index(local.public_subnets_only, each.value) + 1}"
   }
 }
 
@@ -59,6 +59,6 @@ resource "aws_subnet" "private" {
   cidr_block        = each.value
 
   tags = {
-    "Name" = "${var.vpc_name}-private_subnet-${index(local.private_azs, each.key) + 1}"
+    "Name" = "${var.vpc_name}-private_subnet-${index(local.private_subnets_only, each.value) + 1}"
   }
 }
