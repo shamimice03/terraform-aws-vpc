@@ -24,6 +24,17 @@ resource "aws_vpc" "this_vpc" {
   }
 }
 
+
+output "vpc_id" {
+  description = "ID of the VPC"
+  value = try(aws_vpc.this_vpc.id, "")
+}
+
+output "vpc_cidr_block" {
+  description = "The CIDR block of the VPC"
+  value       = try(aws_vpc.this_vpc.cidr_block, "")
+}
+
 ############################################################################
 ###        Public Subnet 
 ############################################################################
@@ -52,6 +63,18 @@ resource "aws_subnet" "public" {
     "Name" = "${var.vpc_name}-public_subnet-${index(local.public_subnets_only, each.value) + 1}"
   }
 }
+
+
+output "public_subnet_id" {
+  value = aws_subnet.public
+}
+
+/*
+
+To use public subnet while deploying ec2 instance.
+subnet_id = module.<module-name>.public_subnet_id["az-name"]
+*/
+
 
 ############################################################################
 ###        Private Subnet 
