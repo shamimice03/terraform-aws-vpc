@@ -1,11 +1,14 @@
 locals {
-  vpc_id               = aws_vpc.this_vpc.id
+  vpc_id = aws_vpc.this_vpc.id
 
   public_azs_only  = keys(var.public_subnets)
   private_azs_only = keys(var.private_subnets)
 
   public_subnets_only  = values(var.public_subnets)
   private_subnets_only = values(var.private_subnets)
+
+  nat_count = var.enable_single_nat_gateway == true ? 1 : 0
+
 }
 
 ############################################################################
@@ -99,7 +102,7 @@ resource "aws_route" "public_route_table_route" {
 
 # Associate Public Subnets with the Public Route Table
 resource "aws_route_table_association" "public_route_table_association" {
-  for_each = var.public_subnets
+  for_each       = var.public_subnets
   subnet_id      = aws_subnet.public[each.key].id
   route_table_id = aws_route_table.public_route_table.id
 }
@@ -114,37 +117,17 @@ resource "aws_route_table_association" "public_route_table_association" {
 # This configuration will deploy a single NAT gateway on the first public subnet 
 
 resource "aws_eip" "single_eip" {
-  count = var.enable_single_nat == true ? 1 : 0
-  vpc = true
+  count = local.nat_count
+  vpc   = true
 }
 
 resource "aws_nat_gateway" "single_nat_gateway" {
-  count =  var.enable_single_nat == true ? 1 : 0
+  count         = local.nat_count
   allocation_id = aws_eip.single_eip[count.index].id
   subnet_id     = aws_subnet.public[local.public_azs_only[count.index]].id
 
   tags = {
     "Name" = "${var.vpc_name}-nat_gw"
-  }
-}
-
-################# HA NAT #################
-
-# This configuration wll deploy NAT gateway on every public subnet configured
-
-resource "aws_eip" "multiple_eip" {
-  count = var.enable_ha_nat == true ? length(var.public_subnets) : 0
-  vpc = true
-}
-
-resource "aws_nat_gateway" "ha_nat_gateway" {
-  
-  count = var.enable_ha_nat == true ? length(var.public_subnets) : 0
-  allocation_id = aws_eip.multiple_eip[count.index].id
-  subnet_id     = aws_subnet.public[local.public_azs_only[count.index]].id
-
-  tags = {
-    "Name" = "${var.vpc_name}-nat-gw-${count.index + 1}"
   }
 }
 
@@ -161,23 +144,28 @@ resource "aws_route_table" "private_route_table" {
   }
 }
 
-# Associate Private Subnets with the Private Route Table
 resource "aws_route_table_association" "private_route_table_association" {
-  for_each = var.private_subnets
+  for_each       = var.private_subnets
   subnet_id      = aws_subnet.private[each.key].id
   route_table_id = aws_route_table.private_route_table.id
 }
 
-# # Route Configuration for Private Subnets
-# resource "aws_route" "private_route_table_route" {
-#   route_table_id         = aws_route_table.public_route_table.id
-#   destination_cidr_block = "0.0.0.0/0"
-#   gateway_id             = aws_internet_gateway.igw.id
-# }
-
-# Add add a NAT gateway with private subnet route
+# Add add a NAT gateway with private subnet route if enabled
 resource "aws_route" "private_route_table_route" {
+  count                  = local.nat_count
   route_table_id         = aws_route_table.private_route_table.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_nat_gateway.single_nat_gateway[0].id
+  gateway_id             = aws_nat_gateway.single_nat_gateway[count.index].id
+}
+
+
+############################################################################
+###                   Baston Host
+############################################################################
+
+resource "aws_instance" "baston_host" {
+  ami           = data.aws_ami.linx_ami.id
+  instance_type = var.instance_type
+  subnet_id     = aws_subnet.public[local.public_azs_only[0]].id
+  key_name      = "access-key"
 }

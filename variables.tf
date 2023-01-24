@@ -11,6 +11,13 @@ variable "cidr" {
 }
 
 
+variable "instance_type" {
+  description = "Name of the vpc"
+  type        = string
+  default     = "t2.micro"
+}
+
+
 variable "enable_dns_hostnames" {
   description = "Should be true to enable DNS hostnames in the VPC"
   type        = bool
@@ -24,18 +31,18 @@ variable "enable_dns_support" {
 }
 
 
-variable "enable_single_nat" {
+variable "enable_single_nat_gateway" {
   description = "Should be true to create NAT gateway for private subnets"
   type        = bool
   default     = false
 }
 
-variable "enable_ha_nat" {
-  description = "Should be true to create NAT gateway for private subnets"
+
+variable "enable_baston_host" {
+  description = "Should be true to create Baston host on public subnet"
   type        = bool
   default     = false
 }
-
 
 
 variable "public_subnets" {
