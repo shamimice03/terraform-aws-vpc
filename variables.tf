@@ -12,10 +12,29 @@ variable "cidr" {
 
 
 variable "instance_type" {
-  description = "Name of the vpc"
+  description = "Instance Type"
   type        = string
   default     = "t2.micro"
 }
+
+variable "key_name" {
+  description = "Key to access EC2 instance"
+  type        = string
+  default     = "access-key"
+}
+
+variable "public_sg_name" {
+  description = "Security Group Name for public facing SG"
+  type        = string
+  default     = "allow_public_access"
+}
+
+variable "public_sg_description" {
+  description = "Security Group Description for public facing SG"
+  type        = string
+  default     = "This rule will allow to access instance from Internet"
+}
+
 
 
 variable "enable_dns_hostnames" {
@@ -63,3 +82,6 @@ variable "private_subnets" {
     "ap-northeast-1d" = "10.0.48.0/20"
   }
 }
+
+
+
