@@ -142,26 +142,40 @@ resource "aws_instance" "baston_host" {
   subnet_id              = module.vpc.public_subnet_id["ap-northeast-1a"].id
   key_name               = "access-key"
   vpc_security_group_ids = [aws_security_group.public_sg.id]
-  
+
 
   provisioner "file" {
     source      = "access-key.pem"
     destination = "/tmp/access-key.pem"
   }
-  
+
+  provisioner "file" { 
+    source    = "get-docker.sh"
+    destination = "/tmp/get-docker.sh"
+  }
+
   connection {
-    type = "ssh"
-    host = self.public_ip
-    user = "ec2-user"
+    type        = "ssh"
+    host        = self.public_ip
+    user        = "ec2-user"
     private_key = file("/workspace/terraform_aws_vpc/examples/ec2-instance/access-key.pem")
-    timeout = "4m"
+    timeout     = "4m"
+  }
+
+
+  provisioner "remote-exec" {
+    inline = [
+      "cp /tmp/access-key.pem ~/.ssh/",
+      "chmod 400 ~/.ssh/access-key.pem",
+      "scp -i ~/.ssh/access-key.pem -o 'StrictHostKeyChecking=no' /tmp/get-docker.sh ec2-user@${aws_instance.private_node.private_ip}:/tmp/",
+      "ssh -i ~/.ssh/access-key.pem ec2-user@${aws_instance.private_node.private_ip} -o 'StrictHostKeyChecking=no' mkdir test"
+    ]
   }
 
   tags = {
     "Name" = "Baston_host"
   }
 }
-
 
 
 resource "aws_instance" "private_node" {
@@ -173,12 +187,12 @@ resource "aws_instance" "private_node" {
   vpc_security_group_ids = [aws_security_group.private_sg.id]
 
   tags = {
-    "Name" = "Privare_node"
+    "Name" = "Private_node"
   }
 }
 
 output "private_node_ip" {
-    value  = aws_instance.private_node.private_ip
+  value = aws_instance.private_node.private_ip
 }
 
 
