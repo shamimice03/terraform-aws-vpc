@@ -117,3 +117,80 @@ resource "aws_security_group" "allow_tls" {
 #     "Name" = "${var.vpc_name}-baston_host"
 #   }
 # }
+
+
+# module "aws_sg" {
+#   source = "terraform-aws-modules/security-group/aws"
+
+#   name        = "baston-host-access-sg"
+#   description = "Security group for baston-host"
+#   vpc_id      = module.vpc.vpc_id
+
+#   ingress_with_cidr_blocks = [
+#     {
+#       from_port   = 22
+#       to_port     = 22
+#       protocol    = "tcp"
+#       description = "ssh"
+#       cidr_blocks = "0.0.0.0/0"
+#     },
+#     {
+#       from_port   = -1
+#       to_port     = -1
+#       protocol    = "icmp"
+#       description = "ping"
+#       cidr_blocks = "0.0.0.0/0"
+#     },
+#   ]
+#   egress_with_cidr_blocks = [
+#     {
+#       from_port   = 22
+#       to_port     = 22
+#       protocol    = "tcp"
+#       description = "ssh"
+#       cidr_blocks = "0.0.0.0/0"
+#     },
+#     {
+#       from_port   = -1
+#       to_port     = -1
+#       protocol    = "icmp"
+#       description = "ping"
+#       cidr_blocks = "0.0.0.0/0"
+#     },
+
+#   ]
+
+# }
+
+#  security group - access from Baston_host
+resource "aws_security_group" "private_sg" {
+  name        = "ssh_ping_access_from_baston"
+  description = "Allow SSH and PING traffic to and from Baston-host"
+  vpc_id      = module.vpc.vpc_id
+
+  dynamic "ingress" {
+
+    for_each = local.sg_ports_private_nodes
+    content {
+      from_port       = ingress.value["port"]
+      to_port         = ingress.value["port"]
+      protocol        = ingress.value["protocol"]
+      security_groups = [aws_security_group.public_sg.id] # from this (baston_host) security group
+    }
+  }
+
+  dynamic "egress" {
+
+    for_each = local.sg_ports_private_nodes
+    content {
+      from_port       = egress.value["port"]
+      to_port         = egress.value["port"]
+      protocol        = egress.value["protocol"]
+      security_groups = [aws_security_group.public_sg.id] # from this (baston_host) security group
+    }
+  }
+
+  tags = {
+    "Name" = "ssh_ping_access_from_baston"
+  }
+}
