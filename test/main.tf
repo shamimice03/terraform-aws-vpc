@@ -72,3 +72,48 @@ resource "aws_security_group" "allow_tls" {
     Name = "allow_tls"
   }
 }
+
+
+# ############################## Public-Access-SG ##############################
+
+# resource "aws_security_group" "public_access_sg" {
+
+#   name        = var.public_sg_name
+#   description = var.public_sg_description
+#   vpc_id      = local.vpc_id
+
+#   ingress {
+#     cidr_blocks = ["0.0.0.0/0"]
+#     description = "allow public access"
+#     from_port   = 0
+#     protocol    = "-1"
+#     to_port     = 0
+#   }
+
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+# }
+
+
+# ############################################################################
+# ###                           Baston Host
+# ############################################################################
+
+# resource "aws_instance" "baston_host" {
+
+#   count = var.enable_baston_host == true ? 1 : 0
+#   ami           = data.aws_ami.linux_ami.id
+#   instance_type = var.instance_type
+#   subnet_id     = aws_subnet.public[local.public_azs_only[count.index]].id
+#   key_name      = "access-key"
+#   vpc_security_group_ids = [aws_security_group.public_access_sg.id]
+
+#   tags = {
+#     "Name" = "${var.vpc_name}-baston_host"
+#   }
+# }

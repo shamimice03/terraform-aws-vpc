@@ -7,35 +7,8 @@ variable "vpc_name" {
 variable "cidr" {
   description = "CIDR Block of the VPC"
   type        = string
-  default     = "0.0.0.0/0"
+  default     = "10.0.0.0/16"
 }
-
-
-# variable "instance_type" {
-#   description = "Instance Type"
-#   type        = string
-#   default     = "t2.micro"
-# }
-
-# variable "key_name" {
-#   description = "Key to access EC2 instance"
-#   type        = string
-#   default     = "access-key"
-# }
-
-# variable "public_sg_name" {
-#   description = "Security Group Name for public facing SG"
-#   type        = string
-#   default     = "allow_public_access"
-# }
-
-# variable "public_sg_description" {
-#   description = "Security Group Description for public facing SG"
-#   type        = string
-#   default     = "This rule will allow to access instance from Internet"
-# }
-
-
 
 variable "enable_dns_hostnames" {
   description = "Should be true to enable DNS hostnames in the VPC"
@@ -57,31 +30,43 @@ variable "enable_single_nat_gateway" {
 }
 
 
-variable "enable_baston_host" {
-  description = "Should be true to create Baston host on public subnet"
-  type        = bool
-  default     = false
-}
+# variable "public_subnets" {
+#   description = "Mapping AZ and Public subnets"
+#   type        = map(any)
+#   default = {
+#     "ap-northeast-1a" = "10.0.0.0/20",
+#     "ap-northeast-1d" = "10.0.16.0/20"
+#   }
+# }
 
+
+# variable "private_subnets" {
+#   description = "Mapping AZ and Private subnets"
+#   type        = map(any)
+#   default = {
+#     "ap-northeast-1a" = "10.0.32.0/20",
+#     "ap-northeast-1d" = "10.0.48.0/20"
+#   }
+# }
 
 variable "public_subnets" {
   description = "Mapping AZ and Public subnets"
   type        = map(any)
-  default = {
-    "ap-northeast-1a" = "10.0.0.0/20",
-    "ap-northeast-1d" = "10.0.16.0/20"
-  }
+  default     = {}
 }
 
 
 variable "private_subnets" {
   description = "Mapping AZ and Private subnets"
   type        = map(any)
-  default = {
-    "ap-northeast-1a" = "10.0.32.0/20",
-    "ap-northeast-1d" = "10.0.48.0/20"
-  }
+  default     = {}
 }
 
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(any)
+  default     = {}
+}
 
 
