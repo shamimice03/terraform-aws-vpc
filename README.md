@@ -1,4 +1,4 @@
-## Create AWS VPC using terraform
+## Create AWS VPC using Terraform
 
 ## Usage
 ```

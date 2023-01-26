@@ -27,26 +27,3 @@ variable "enable_baston_host" {
   type        = bool
   default     = false
 }
-
-variable "sg_ports_baston_host" {
-  type        = list(any)
-  description = "list of ingress ports and protocols"
-  default = [
-    {
-      "port" : 443,
-      "protocol" : "tcp"
-    },
-    {
-      "port" : 80,
-      "protocol" : "tcp"
-    },
-    {
-      "port" : 22,
-      "protocol" : "tcp"
-    },
-    {
-      "port" : -1,
-      "protocol" : "icmp"
-    }
-  ]
-}
