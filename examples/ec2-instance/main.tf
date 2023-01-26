@@ -130,7 +130,7 @@ resource "aws_instance" "baston_host" {
 
 
   provisioner "file" {
-    source      = "access-key.pem"
+    source      = "access-key.pem"      # Passing Private-Access key, so that baston_host can ssh to any private_node
     destination = "/tmp/access-key.pem"
   }
 
@@ -143,7 +143,7 @@ resource "aws_instance" "baston_host" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ec2-user"
-    private_key = file("/workspace/terraform_aws_vpc/examples/ec2-instance/access-key.pem")
+    private_key = file("/workspace/terraform_aws_vpc/examples/ec2-instance/access-key.pem")  # Location of Private-Access key
     timeout     = "4m"
   }
 
