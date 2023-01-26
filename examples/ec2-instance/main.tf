@@ -17,24 +17,13 @@ module "vpc" {
 
   enable_dns_hostnames      = true
   enable_dns_support        = true
-  enable_single_nat_gateway = false
+  enable_single_nat_gateway = true
 
   tags = {
     "Team" = "Platform-team"
     "Env"  = "dev"
   }
 }
-
-/*
-
- *** Dynamic Block on Security Group
-Provisioner local to pass access-key file
-
-Provisioner remote to execute file - change permission chmod 400
-            ssh to the private-node and create a file
-
-*/
-
 
 locals {
   sg_ports_baston_host = [
@@ -104,7 +93,7 @@ resource "aws_security_group" "public_sg" {
 #  security group - access from Baston_host
 resource "aws_security_group" "private_sg" {
   name        = "ssh_ping_access_from_baston"
-  description = "Allow SSH and PING traffic to and from Baston-host"
+  description = "Allow SSH and PING traffic to and from Baston-Host"
   vpc_id      = module.vpc.vpc_id
 
   dynamic "ingress" {
@@ -118,15 +107,11 @@ resource "aws_security_group" "private_sg" {
     }
   }
 
-  dynamic "egress" {
-
-    for_each = local.sg_ports_private_nodes
-    content {
-      from_port       = egress.value["port"]
-      to_port         = egress.value["port"]
-      protocol        = egress.value["protocol"]
-      security_groups = [aws_security_group.public_sg.id] # from this (baston_host) security group
-    }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -134,7 +119,7 @@ resource "aws_security_group" "private_sg" {
   }
 }
 
-
+# Baston_Host
 resource "aws_instance" "baston_host" {
 
   ami                    = data.aws_ami.linux_ami.id
@@ -149,8 +134,8 @@ resource "aws_instance" "baston_host" {
     destination = "/tmp/access-key.pem"
   }
 
-  provisioner "file" { 
-    source    = "get-docker.sh"
+  provisioner "file" {
+    source      = "get-docker.sh"
     destination = "/tmp/get-docker.sh"
   }
 
@@ -168,16 +153,18 @@ resource "aws_instance" "baston_host" {
       "cp /tmp/access-key.pem ~/.ssh/",
       "chmod 400 ~/.ssh/access-key.pem",
       "scp -i ~/.ssh/access-key.pem -o 'StrictHostKeyChecking=no' /tmp/get-docker.sh ec2-user@${aws_instance.private_node.private_ip}:/tmp/",
-      "ssh -i ~/.ssh/access-key.pem ec2-user@${aws_instance.private_node.private_ip} -o 'StrictHostKeyChecking=no' mkdir test"
+      "ssh -i ~/.ssh/access-key.pem ec2-user@${aws_instance.private_node.private_ip} -o 'StrictHostKeyChecking=no' bash /tmp/get-docker.sh"
     ]
   }
 
   tags = {
-    "Name" = "Baston_host"
+    "Name" = "Baston_Host"
   }
 }
 
 
+
+# Private_Node
 resource "aws_instance" "private_node" {
 
   ami                    = data.aws_ami.linux_ami.id
@@ -187,7 +174,7 @@ resource "aws_instance" "private_node" {
   vpc_security_group_ids = [aws_security_group.private_sg.id]
 
   tags = {
-    "Name" = "Private_node"
+    "Name" = "Private_Node"
   }
 }
 

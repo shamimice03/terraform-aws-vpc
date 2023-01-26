@@ -12,7 +12,6 @@ output "vpc_cidr_block" {
 To use public subnet while deploying ec2 instance.
 subnet_id = module.<module-name>.public_subnet_id["az-name"]
 */
-
 output "public_subnet_id" {
   description = "Public Subnet ID's"
   value       = aws_subnet.public
