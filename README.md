@@ -4,7 +4,7 @@
 ```
 module "vpc" {
 
-  source = "github.com/shamimice03/terraform_aws_vpc"
+  source = "github.com/shamimice03/terraform-aws-vpc"
 
   vpc_name = "dev_vpc"
   cidr     = "192.168.0.0/16"
