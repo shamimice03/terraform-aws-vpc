@@ -3,7 +3,8 @@
 ## Usage
 ```
 module "vpc" {
-  source = "../../"
+
+  source = "github.com/shamimice03/terraform_aws_vpc"
 
   vpc_name = "dev_vpc"
   cidr     = "192.168.0.0/16"
@@ -27,6 +28,7 @@ module "vpc" {
     "Team" = "Platform-team"
     "Env"  = "dev"
   }
+
 }
 ```
 
