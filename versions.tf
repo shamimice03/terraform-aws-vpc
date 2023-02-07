@@ -8,3 +8,7 @@ terraform {
     }
   }
 }
+
+provider "aws" {
+  profile = "terraform-user"
+}

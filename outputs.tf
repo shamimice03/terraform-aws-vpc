@@ -22,7 +22,22 @@ output "private_subnet_id" {
   value       = aws_subnet.private
 }
 
+output "public_subnets" {
+  description = "List of All Public Subnets"
+  value =[
+    for k, v in var.public_subnets : aws_subnet.private[k].id
+  ]
+}
+
+output "private_subnets" {
+  description = "List of All Private Subnets"
+  value =[
+    for k, v in var.private_subnets : aws_subnet.private[k].id
+  ]
+}
+
 output "igw_id" {
   description = "Internet Gateway ID's"
   value       = aws_internet_gateway.igw.id
 }
+
