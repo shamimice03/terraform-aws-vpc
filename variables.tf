@@ -30,38 +30,35 @@ variable "enable_single_nat_gateway" {
 }
 
 
-# variable "public_subnets" {
+# variable "public_subnets_cidr" {
 #   description = "Mapping AZ and Public subnets"
-#   type        = map(any)
-#   default = {
-#     "ap-northeast-1a" = "10.0.0.0/20",
-#     "ap-northeast-1d" = "10.0.16.0/20"
-#   }
+#   type        = list
+#   default = ["10.0.0.0/20", "10.0.16.0/20"]
 # }
 
-
-# variable "private_subnets" {
-#   description = "Mapping AZ and Private subnets"
-#   type        = map(any)
-#   default = {
-#     "ap-northeast-1a" = "10.0.32.0/20",
-#     "ap-northeast-1d" = "10.0.48.0/20"
-#   }
+# variable "public_subnets_az" {
+#   description = "Mapping AZ and Public subnets"
+#   type        = list
+#   default = ["ap-northeast-1a", "ap-northeast-1d"]
 # }
 
-variable "public_subnets" {
+variable "azs" {
   description = "Mapping AZ and Public subnets"
-  type        = map(any)
-  default     = {}
+  type        = list(any)
+  default     = []
 }
 
-
-variable "private_subnets" {
-  description = "Mapping AZ and Private subnets"
-  type        = map(any)
-  default     = {}
+variable "public_subnet_cidr" {
+  description = "Mapping AZ and Public subnets"
+  type        = list(any)
+  default     = []
 }
 
+variable "private_subnet_cidr" {
+  description = "Mapping AZ and Public subnets"
+  type        = list(any)
+  default     = []
+}
 
 variable "tags" {
   description = "A map of tags to add to all resources"
