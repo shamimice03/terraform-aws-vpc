@@ -43,7 +43,7 @@ variable "enable_single_nat_gateway" {
 # }
 
 variable "azs" {
-  description = "Mapping AZ and Public subnets"
+  description = "List of AZs"
   type        = list(any)
   default     = []
 }
@@ -55,7 +55,13 @@ variable "public_subnet_cidr" {
 }
 
 variable "private_subnet_cidr" {
-  description = "Mapping AZ and Public subnets"
+  description = "Mapping AZ and Private subnets"
+  type        = list(any)
+  default     = []
+}
+
+variable "db_subnet_cidr" {
+  description = "Mapping AZ and DB subnets"
   type        = list(any)
   default     = []
 }

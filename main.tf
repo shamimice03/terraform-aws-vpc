@@ -48,6 +48,24 @@ resource "aws_subnet" "private" {
 }
 
 ############################################################################
+###                           Database Subnet                            ### 
+############################################################################
+resource "aws_subnet" "db_subnet" {
+  count             = length(var.db_subnet_cidr)
+  vpc_id            = local.vpc_id
+  availability_zone = var.azs[count.index]
+  cidr_block        = var.db_subnet_cidr[count.index]
+
+
+  tags = merge(
+    { "Name" = "${var.vpc_name}-db-subnet-${count.index + 1}" },
+    var.tags
+  )
+}
+
+
+
+############################################################################
 ###                            Internet Gateway                          ###
 ############################################################################
 resource "aws_internet_gateway" "igw" {
@@ -142,5 +160,25 @@ resource "aws_route" "private_route_table_route" {
   route_table_id         = aws_route_table.private_route_table.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_nat_gateway.single_nat_gateway[count.index].id
+}
+
+############################################################################
+###                  Route Table for DB Subnet                      ###
+############################################################################
+
+resource "aws_route_table" "db_route_table" {
+
+  vpc_id = local.vpc_id
+
+  tags = merge(
+    { "Name" = "${var.vpc_name}-database-RT" },
+    var.tags
+  )
+}
+
+resource "aws_route_table_association" "db_route_table_association" {
+  count          = length(var.db_subnet_cidr)
+  subnet_id      = aws_subnet.db_subnet[count.index].id
+  route_table_id = aws_route_table.db_route_table.id
 }
 

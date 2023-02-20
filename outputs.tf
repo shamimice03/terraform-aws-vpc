@@ -10,16 +10,18 @@ output "vpc_cidr_block" {
 
 output "public_subnet_id" {
   description = "Public Subnet ID's"
-  #count = length(var.public_subnets_cidr)
-  value = aws_subnet.public[*].id
+  value       = aws_subnet.public[*].id
 }
 
 output "private_subnet_id" {
   description = "Private Subnet ID's"
-  #count = length(var.private_subnets_cidr)
-  value = aws_subnet.private[*].id
+  value       = aws_subnet.private[*].id
 }
 
+output "db_subnet_id" {
+  description = "DB Subnet ID's"
+  value       = aws_subnet.db_subnet[*].id
+}
 output "igw_id" {
   description = "Internet Gateway ID's"
   value       = aws_internet_gateway.igw.id
