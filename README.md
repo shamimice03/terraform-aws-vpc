@@ -27,7 +27,7 @@ module "vpc" {
 ```
 
 ## Function Used
-| Function        | Link         
+| Function       | Link         
 | ------------- |:-------------:| 
 | index      | [Link](https://developer.hashicorp.com/terraform/language/functions/index_function)
 | keys       | [Link](https://developer.hashicorp.com/terraform/language/functions/keys)   
