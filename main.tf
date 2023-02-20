@@ -1,18 +1,10 @@
 locals {
-  vpc_id = aws_vpc.this_vpc.id
-
-  public_azs_only  = keys(var.public_subnets)
-  private_azs_only = keys(var.private_subnets)
-
-  public_subnets_only  = values(var.public_subnets)
-  private_subnets_only = values(var.private_subnets)
-
+  vpc_id    = aws_vpc.this_vpc.id
   nat_count = var.enable_single_nat_gateway == true ? 1 : 0
-
 }
 
 ############################################################################
-###        VPC 
+###                           VPC                                        ###
 ############################################################################
 resource "aws_vpc" "this_vpc" {
   cidr_block           = var.cidr
@@ -22,57 +14,59 @@ resource "aws_vpc" "this_vpc" {
   tags = merge({ "Name" = var.vpc_name }, var.tags)
 }
 
-
 ############################################################################
-###        Public Subnet 
+###                          Public Subnet                               ### 
 ############################################################################
-
 resource "aws_subnet" "public" {
-  for_each                = var.public_subnets
+  count                   = length(var.public_subnet_cidr)
   vpc_id                  = local.vpc_id
-  availability_zone       = each.key
-  cidr_block              = each.value
+  availability_zone       = var.azs[count.index]
+  cidr_block              = var.public_subnet_cidr[count.index]
   map_public_ip_on_launch = true
 
 
   tags = merge(
-    { "Name" = "${var.vpc_name}-public_subnet-${index(local.public_subnets_only, each.value) + 1}" },
+    { "Name" = "${var.vpc_name}-public-subnet-${count.index + 1}" },
     var.tags
   )
 }
 
-/*
-    How this is working..
-    In the above "locals", we have extracted the "subnets" using "values" function.
-    
-    Our target --
-    Name = vpc_name-public_subnet-1
-    Name = vpc_name-public_subnet-2
-
-    For getting the index as a counter we are using "index" function 
-
-    */
-
-
 ############################################################################
-###        Private Subnet 
+###                           Private Subnet                             ### 
 ############################################################################
-
 resource "aws_subnet" "private" {
-  for_each          = var.private_subnets
+  count             = length(var.private_subnet_cidr)
   vpc_id            = local.vpc_id
-  availability_zone = each.key
-  cidr_block        = each.value
+  availability_zone = var.azs[count.index]
+  cidr_block        = var.private_subnet_cidr[count.index]
+
 
   tags = merge(
-    { "Name" = "${var.vpc_name}-private_subnet-${index(local.private_subnets_only, each.value) + 1}" },
+    { "Name" = "${var.vpc_name}-private-subnet-${count.index + 1}" },
+    var.tags
+  )
+}
+
+############################################################################
+###                           Database Subnet                            ### 
+############################################################################
+resource "aws_subnet" "db_subnet" {
+  count             = length(var.db_subnet_cidr)
+  vpc_id            = local.vpc_id
+  availability_zone = var.azs[count.index]
+  cidr_block        = var.db_subnet_cidr[count.index]
+
+
+  tags = merge(
+    { "Name" = "${var.vpc_name}-db-subnet-${count.index + 1}" },
     var.tags
   )
 }
 
 
+
 ############################################################################
-###       Internet Gateway
+###                            Internet Gateway                          ###
 ############################################################################
 resource "aws_internet_gateway" "igw" {
 
@@ -82,19 +76,17 @@ resource "aws_internet_gateway" "igw" {
     { "Name" = "${var.vpc_name}-igw" },
     var.tags
   )
-
 }
 
-
 ############################################################################
-###       Route Table for Public Subnet
+###                      Route Table for Public Subnet                   ###
 ############################################################################
 resource "aws_route_table" "public_route_table" {
 
   vpc_id = local.vpc_id
 
   tags = merge(
-    { "Name" = "${var.vpc_name}-public-rt" },
+    { "Name" = "${var.vpc_name}-public-RT" },
     var.tags
   )
 }
@@ -108,17 +100,16 @@ resource "aws_route" "public_route_table_route" {
 
 # Associate Public Subnets with the Public Route Table
 resource "aws_route_table_association" "public_route_table_association" {
-  for_each       = var.public_subnets
-  subnet_id      = aws_subnet.public[each.key].id
+  count          = length(var.public_subnet_cidr)
+  subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public_route_table.id
 }
 
 ############################################################################
-###       NAT GATEWAY
+###                              NAT GATEWAY                             ###
 ############################################################################
 
-
-################# SINGLE NAT #################
+################################ SINGLE NAT ################################
 
 # This configuration will deploy a single NAT gateway on the first public subnet 
 
@@ -127,7 +118,7 @@ resource "aws_eip" "single_eip" {
   vpc   = true
 
   tags = merge(
-    { "Name" = "${var.vpc_name} - eip" },
+    { "Name" = "${var.vpc_name}-eip" },
     var.tags
   )
 }
@@ -135,16 +126,16 @@ resource "aws_eip" "single_eip" {
 resource "aws_nat_gateway" "single_nat_gateway" {
   count         = local.nat_count
   allocation_id = aws_eip.single_eip[count.index].id
-  subnet_id     = aws_subnet.public[local.public_azs_only[count.index]].id
+  subnet_id     = aws_subnet.public[count.index].id
 
   tags = merge(
-    { "Name" = "${var.vpc_name}-nat_gw" },
+    { "Name" = "${var.vpc_name}-nat-gw" },
     var.tags
   )
 }
 
 ############################################################################
-###       Route Table for Private Subnet
+###                  Route Table for Private Subnet                      ###
 ############################################################################
 
 resource "aws_route_table" "private_route_table" {
@@ -152,14 +143,14 @@ resource "aws_route_table" "private_route_table" {
   vpc_id = local.vpc_id
 
   tags = merge(
-    { "Name" = "${var.vpc_name}-private-rt" },
+    { "Name" = "${var.vpc_name}-private-RT" },
     var.tags
   )
 }
 
 resource "aws_route_table_association" "private_route_table_association" {
-  for_each       = var.private_subnets
-  subnet_id      = aws_subnet.private[each.key].id
+  count          = length(var.private_subnet_cidr)
+  subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private_route_table.id
 }
 
@@ -169,5 +160,25 @@ resource "aws_route" "private_route_table_route" {
   route_table_id         = aws_route_table.private_route_table.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_nat_gateway.single_nat_gateway[count.index].id
+}
+
+############################################################################
+###                  Route Table for DB Subnet                      ###
+############################################################################
+
+resource "aws_route_table" "db_route_table" {
+
+  vpc_id = local.vpc_id
+
+  tags = merge(
+    { "Name" = "${var.vpc_name}-database-RT" },
+    var.tags
+  )
+}
+
+resource "aws_route_table_association" "db_route_table_association" {
+  count          = length(var.db_subnet_cidr)
+  subnet_id      = aws_subnet.db_subnet[count.index].id
+  route_table_id = aws_route_table.db_route_table.id
 }
 
