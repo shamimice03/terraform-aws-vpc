@@ -26,7 +26,7 @@ module "vpc" {
 }
 ```
 
-## Function Used
+<!-- ## Function Used
 
 <!-- | Function        | Link         
 | ------------- |:-------------:| 
@@ -34,3 +34,4 @@ module "vpc" {
 | keys       | [Link](https://developer.hashicorp.com/terraform/language/functions/keys)   
 | values     | [Link](https://developer.hashicorp.com/terraform/language/functions/values)
 | merge      | [Link](https://developer.hashicorp.com/terraform/language/functions/merge) -->
+ -->
