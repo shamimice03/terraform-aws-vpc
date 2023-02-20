@@ -1,19 +1,12 @@
 module "vpc" {
   source = "../../"
 
-  vpc_name = "dev_vpc"
+  vpc_name = "webapp_dev_vpc"
   cidr     = "192.168.0.0/16"
 
-  public_subnets = {
-    "ap-northeast-1a" = "192.168.0.0/20",
-    "ap-northeast-1c" = "192.168.16.0/20",
-    "ap-northeast-1d" = "192.168.32.0/20"
-  }
-
-  private_subnets = {
-    "ap-northeast-1a" = "192.168.48.0/20",
-    "ap-northeast-1c" = "192.168.64.0/20"
-  }
+  azs                       = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
+  public_subnet_cidr        = ["192.168.0.0/20", "192.168.16.0/20", "192.168.32.0/20"]
+  private_subnet_cidr       = ["192.168.48.0/20", "192.168.64.0/20", "192.168.80.0/20"]
 
   enable_dns_hostnames      = true
   enable_dns_support        = true
@@ -60,7 +53,7 @@ locals {
 
 resource "aws_security_group" "public_sg" {
   name        = "public_ssh_ping_access"
-  description = "Allow SSH and PING traffic from Everywhere"
+  description = "Allow SSH and PINGING from Anywhere"
   vpc_id      = module.vpc.vpc_id
 
   dynamic "ingress" {
@@ -124,14 +117,14 @@ resource "aws_instance" "baston_host" {
 
   ami                    = data.aws_ami.linux_ami.id
   instance_type          = var.instance_type
-  subnet_id              = module.vpc.public_subnet_id["ap-northeast-1a"].id
-  key_name               = "access-key"
+  subnet_id              = module.vpc.public_subnet_id[0]  # ap-northeast-1a
+  key_name               = "aws_access"
   vpc_security_group_ids = [aws_security_group.public_sg.id]
 
 
   provisioner "file" {
-    source      = "access-key.pem"      # Passing Private-Access key, so that baston_host can ssh to any private_node
-    destination = "/tmp/access-key.pem"
+    source      = "~/.ssh/aws_access"      # Passing Private-Access key, so that baston_host can ssh to any private_node
+    destination = "/tmp/aws_access"
   }
 
   provisioner "file" {
@@ -143,17 +136,17 @@ resource "aws_instance" "baston_host" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ec2-user"
-    private_key = file("/workspace/terraform_aws_vpc/examples/ec2-instance/access-key.pem")  # Location of Private-Access key
+    private_key = file("~/.ssh/aws_access")  # Location of Private-Access key
     timeout     = "4m"
   }
 
 
   provisioner "remote-exec" {
     inline = [
-      "cp /tmp/access-key.pem ~/.ssh/",
-      "chmod 400 ~/.ssh/access-key.pem",
-      "scp -i ~/.ssh/access-key.pem -o 'StrictHostKeyChecking=no' /tmp/get-docker.sh ec2-user@${aws_instance.private_node.private_ip}:/tmp/",
-      "ssh -i ~/.ssh/access-key.pem ec2-user@${aws_instance.private_node.private_ip} -o 'StrictHostKeyChecking=no' bash /tmp/get-docker.sh"
+      "cp /tmp/aws_access ~/.ssh/",
+      "chmod 400 ~/.ssh/aws_access",
+      "scp -i ~/.ssh/aws_access -o 'StrictHostKeyChecking=no' /tmp/get-docker.sh ec2-user@${aws_instance.private_node.private_ip}:/tmp/",
+      "ssh -i ~/.ssh/aws_access ec2-user@${aws_instance.private_node.private_ip} -o 'StrictHostKeyChecking=no' bash /tmp/get-docker.sh"
     ]
   }
 
@@ -169,8 +162,8 @@ resource "aws_instance" "private_node" {
 
   ami                    = data.aws_ami.linux_ami.id
   instance_type          = var.instance_type
-  subnet_id              = module.vpc.private_subnet_id["ap-northeast-1c"].id
-  key_name               = "access-key"
+  subnet_id              = module.vpc.private_subnet_id[0]  # ap-northeast-1c
+  key_name               = "aws_access"
   vpc_security_group_ids = [aws_security_group.private_sg.id]
 
   tags = {
