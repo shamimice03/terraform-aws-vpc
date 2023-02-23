@@ -82,7 +82,7 @@ resource "aws_internet_gateway" "igw" {
 ###                      Route Table for Public Subnet                   ###
 ############################################################################
 resource "aws_route_table" "public_route_table" {
-
+  count  = length(var.public_subnet_cidr) > 0 ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -93,7 +93,7 @@ resource "aws_route_table" "public_route_table" {
 
 # Route Configuration for Public Subnets
 resource "aws_route" "public_route_table_route" {
-  route_table_id         = aws_route_table.public_route_table.id
+  route_table_id         = aws_route_table.public_route_table[0].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
 }
@@ -102,7 +102,7 @@ resource "aws_route" "public_route_table_route" {
 resource "aws_route_table_association" "public_route_table_association" {
   count          = length(var.public_subnet_cidr)
   subnet_id      = aws_subnet.public[count.index].id
-  route_table_id = aws_route_table.public_route_table.id
+  route_table_id = aws_route_table.public_route_table[0].id
 }
 
 ############################################################################
@@ -139,7 +139,7 @@ resource "aws_nat_gateway" "single_nat_gateway" {
 ############################################################################
 
 resource "aws_route_table" "private_route_table" {
-
+  count  = length(var.private_subnet_cidr) > 0 ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -151,13 +151,13 @@ resource "aws_route_table" "private_route_table" {
 resource "aws_route_table_association" "private_route_table_association" {
   count          = length(var.private_subnet_cidr)
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private_route_table.id
+  route_table_id = aws_route_table.private_route_table[0].id
 }
 
 # Add add a NAT gateway with private subnet route if enabled
 resource "aws_route" "private_route_table_route" {
   count                  = local.nat_count
-  route_table_id         = aws_route_table.private_route_table.id
+  route_table_id         = aws_route_table.private_route_table[0].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_nat_gateway.single_nat_gateway[count.index].id
 }
@@ -167,7 +167,7 @@ resource "aws_route" "private_route_table_route" {
 ############################################################################
 
 resource "aws_route_table" "db_route_table" {
-
+  count  = length(var.db_subnet_cidr) > 0 ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -179,6 +179,6 @@ resource "aws_route_table" "db_route_table" {
 resource "aws_route_table_association" "db_route_table_association" {
   count          = length(var.db_subnet_cidr)
   subnet_id      = aws_subnet.db_subnet[count.index].id
-  route_table_id = aws_route_table.db_route_table.id
+  route_table_id = aws_route_table.db_route_table[0].id
 }
 
