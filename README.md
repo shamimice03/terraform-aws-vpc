@@ -26,11 +26,4 @@ module "vpc" {
 }
 ```
 
-## Function Used
-| Function       | Link         
-| ------------- |:-------------:| 
-| index      | [Link](https://developer.hashicorp.com/terraform/language/functions/index_function)
-| keys       | [Link](https://developer.hashicorp.com/terraform/language/functions/keys)   
-| values     | [Link](https://developer.hashicorp.com/terraform/language/functions/values)
-| merge      | [Link](https://developer.hashicorp.com/terraform/language/functions/merge)
 
