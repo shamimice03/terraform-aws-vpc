@@ -29,9 +29,11 @@ module "vpc" {
 ## Outputs
 | Name | Description | Type |
 |------|---------|-----------|
-db_subnet_id | DB Subnet ID's | 
-igw_id | Internet Gateway ID's | 
-private_subnet_id | Private Subnet ID's |
-public_subnet_id | Public Subnet ID's |
-vpc_cidr_block | The CIDR block of the VPC |
-vpc_id | ID of the VPC |
+vpc_id | ID of the VPC | string
+vpc_cidr_block | The CIDR block of the VPC | string
+public_subnet_id | Public Subnet ID's | list
+private_subnet_id | Private Subnet ID's | list
+db_subnet_id | DB Subnet ID's | list
+igw_id | Internet Gateway ID's | string
+
+
