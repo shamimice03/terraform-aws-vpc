@@ -1,10 +1,10 @@
 ## Create AWS VPC using Terraform
 
-## Usage
+### Usage
 ```
 module "vpc" {
 
-  source = "github.com/shamimice03/terraform-aws-vpc"
+  source = "shamimice03/vpc/aws"
 
   vpc_name = "prod_vpc"
   cidr     = "192.168.0.0/16"
@@ -26,12 +26,12 @@ module "vpc" {
 }
 ```
 
-## Outputs
+### Outputs
 | Name | Description | Type |
 |------|---------|-----------|
-vpc_id | ID of the VPC | string
+vpc_id | VPC ID | string
 vpc_cidr_block | The CIDR block of the VPC | string
-public_subnet_id | Public Subnet ID's | list
+public_subnet_id | Public Subnet ID' | list
 private_subnet_id | Private Subnet ID's | list
 db_subnet_id | DB Subnet ID's | list
 igw_id | Internet Gateway ID's | string
