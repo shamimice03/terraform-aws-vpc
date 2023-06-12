@@ -36,6 +36,8 @@ private_subnet_id | Private Subnet ID's | `list`
 db_subnet_id | DB Subnet ID's | `list`
 igw_id | Internet Gateway ID's | `string`
 
+
+
 ***
-### others:
+### Others:
 > Subnet Calculator: https://www.solarwinds.com/free-tools/advanced-subnet-calculator
