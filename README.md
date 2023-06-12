@@ -19,7 +19,7 @@ module "vpc" {
   enable_single_nat_gateway = false
 
   tags = {
-    "Team" = "Platform-team"
+    "Team" = "platform-team"
     "Env"  = "prod"
   }
 
@@ -36,6 +36,6 @@ private_subnet_id | Private Subnet ID's | `list`
 db_subnet_id | DB Subnet ID's | `list`
 igw_id | Internet Gateway ID's | `string`
 
-
+***
 ### others:
 > Subnet Calculator: https://www.solarwinds.com/free-tools/advanced-subnet-calculator
