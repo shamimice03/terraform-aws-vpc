@@ -67,6 +67,12 @@ variable "db_subnet_cidr" {
   default     = []
 }
 
+variable "intra_subnet_cidr" {
+  description = "Mapping AZ and Intra subnets"
+  type        = list(any)
+  default     = []
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(any)

@@ -63,7 +63,21 @@ resource "aws_subnet" "db_subnet" {
   )
 }
 
+############################################################################
+###                           Intra Subnet                            ### 
+############################################################################
+resource "aws_subnet" "intra_subnet" {
+  count             = length(var.intra_subnet_cidr)
+  vpc_id            = local.vpc_id
+  availability_zone = var.azs[count.index]
+  cidr_block        = var.intra_subnet_cidr[count.index]
 
+
+  tags = merge(
+    { "Name" = "${var.vpc_name}-db-subnet-${count.index + 1}" },
+    var.tags
+  )
+}
 
 ############################################################################
 ###                            Internet Gateway                          ###
@@ -163,7 +177,7 @@ resource "aws_route" "private_route_table_route" {
 }
 
 ############################################################################
-###                  Route Table for DB Subnet                      ###
+###                  Route Table for DB Subnet                           ###
 ############################################################################
 
 resource "aws_route_table" "db_route_table" {
@@ -182,3 +196,22 @@ resource "aws_route_table_association" "db_route_table_association" {
   route_table_id = aws_route_table.db_route_table[0].id
 }
 
+############################################################################
+###                  Route Table for Intra Subnet                        ###
+############################################################################
+
+resource "aws_route_table" "intra_route_table" {
+  count  = length(var.intra_subnet_cidr) > 0 ? 1 : 0
+  vpc_id = local.vpc_id
+
+  tags = merge(
+    { "Name" = "${var.vpc_name}-intra-RT" },
+    var.tags
+  )
+}
+
+resource "aws_route_table_association" "intra_route_table_association" {
+  count          = length(var.intra_subnet_cidr)
+  subnet_id      = aws_subnet.intra_subnet[count.index].id
+  route_table_id = aws_route_table.intra_route_table[0].id
+}

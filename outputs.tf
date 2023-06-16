@@ -22,6 +22,12 @@ output "db_subnet_id" {
   description = "DB Subnet ID's"
   value       = aws_subnet.db_subnet[*].id
 }
+
+output "intra_subnet_id" {
+  description = "DB Subnet ID's"
+  value       = aws_subnet.intra_subnet[*].id
+}
+
 output "igw_id" {
   description = "Internet Gateway ID's"
   value       = aws_internet_gateway.igw.id
@@ -30,7 +36,7 @@ output "igw_id" {
 # output "public_subnets" {
 #   description = "List of All Public Subnets"
 #   value = [
-#     for k, v in var.public_subnets : aws_subnet.private[k].id
+#     for k, v in var.public_subnets : aws_subnet.public[k].id
 #   ]
 # }
 
