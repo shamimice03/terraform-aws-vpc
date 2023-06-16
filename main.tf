@@ -74,7 +74,7 @@ resource "aws_subnet" "intra_subnet" {
 
 
   tags = merge(
-    { "Name" = "${var.vpc_name}-db-subnet-${count.index + 1}" },
+    { "Name" = "${var.vpc_name}-intra-subnet-${count.index + 1}" },
     var.tags
   )
 }
