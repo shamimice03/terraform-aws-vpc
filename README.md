@@ -41,4 +41,4 @@ igw_id | Internet Gateway ID's | `string`
 
 ***
 ### Others:
-> Subnet Calculator: https://www.solarwinds.com/free-tools/advanced-subnet-calculator
+- [Subnet Calculator](https://www.solarwinds.com/free-tools/advanced-subnet-calculator)
