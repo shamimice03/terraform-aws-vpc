@@ -1,7 +1,7 @@
 ## Create AWS VPC using Terraform
 
 ### Usage
-```
+```hcl
 module "vpc" {
 
     source = "shamimice03/vpc/aws"
