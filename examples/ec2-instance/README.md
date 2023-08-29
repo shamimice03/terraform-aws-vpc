@@ -1,20 +1,20 @@
-# Deploy EC2-instances on your VPC
+# EC2-instances on your VPC
 
 ### VPC (Virtual Private Cloud)
 
-- A VPC named "webapp_dev_vpc" with a CIDR block of "192.168.0.0/16" will be created in the AWS region specified in your provider configuration.
-- This VPC will span three availability zones: "ap-northeast-1a," "ap-northeast-1c," and "ap-northeast-1d."
+- A VPC named `webapp_dev_vpc` with a CIDR block of `192.168.0.0/16` will be created in the AWS region specified in your provider configuration.
+- This VPC will span three availability zones: `ap-northeast-1a`, `ap-northeast-1c`, and `ap-northeast-1d`.
 - Public and private subnets will be created in each of these availability zones, each with its own CIDR block.
 
 ### Security Groups
 
-- A security group named "public_ssh_ping_access" will be created with ingress and egress rules allowing SSH, PING, HTTP, and HTTPS traffic from anywhere. This security group will be associated with the bastion host.
-- Another security group named "ssh_ping_access_from_baston" will be created with ingress rules allowing SSH and PING traffic from the "public_ssh_ping_access" security group, which is effectively allowing SSH and PING access only from the bastion host.
+- A security group named `public_ssh_ping_access` will be created with ingress and egress rules allowing SSH, PING, HTTP, and HTTPS traffic from anywhere. This security group will be associated with the bastion host.
+- Another security group named `ssh_ping_access_from_baston` will be created with ingress rules allowing SSH and PING traffic from the `public_ssh_ping_access` security group, which effectively allows SSH and PING access only from the bastion host.
 
 ### Baston Host
 
-- An AWS EC2 instance named "Baston_Host" will be launched using a specified Amazon Machine Image (AMI) and instance type.
-- It will be placed in the public subnet of the first availability zone (ap-northeast-1a).
+- An AWS EC2 instance named `Baston_Host` will be launched using a specified Amazon Machine Image (AMI) and instance type.
+- It will be placed in the public subnet of the first availability zone (`ap-northeast-1a`).
 - The instance will use the `aws_access` key pair for SSH access.
 - Two files, `aws_access` and `get-docker.sh`, will be copied to the instance, and Docker will be installed on it.
 - A connection will be established to the instance for file provisioning and execution of remote commands.
@@ -22,10 +22,10 @@
 
 ### Private Node
 
-- An AWS EC2 instance named "Private_Node" will be launched using the same AMI and instance type.
-- It will be placed in the private subnet of the first availability zone (ap-northeast-1c).
-- The instance will use the "aws_access" key pair for SSH access.
-- The "private_sg" security group will be associated with this instance.
+- An AWS EC2 instance named `Private_Node` will be launched using the same AMI and instance type.
+- It will be placed in the private subnet of the first availability zone (`ap-northeast-1c`).
+- The instance will use the `aws_access` key pair for SSH access.
+- The `private_sg` security group will be associated with this instance.
 - Tags will be applied to the instance.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
