@@ -1,0 +1,20 @@
+name: Greetings
+on:
+  issues:
+  pull_request_target:
+        types: [ opened ]
+  workflow_dispatch:
+
+jobs:
+    welcome:
+        permissions: write-all
+        name: Welcome Step
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: EddieHubCommunity/gh-action-community/src/welcome@main
+              with:
+                github-token: ${{ secrets.RELEASE_TOKEN }}
+                issue-message: '<h1>It''s great having you contribute to this project</h1> Welcome to the community :nerd_face: :rocket:'
+                pr-message: '<h1>It''s great having you contribute to this project</h1> Welcome to the community :nerd_face:'
+                footer: "Soon one of our maintainers will review it and provide you with feedback/suggestions. If you think it's something urgent, feel free to reach out <a href='https://www.linkedin.com/in/shamimice03'>Md Shamim</a> on <b>LinkedIn</b>. Please star ⭐ this repo to show us support.</b><br><br><b>Happy, Open Source!</b>"
