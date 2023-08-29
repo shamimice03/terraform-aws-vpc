@@ -4,9 +4,9 @@ module "vpc" {
   vpc_name = "webapp_dev_vpc"
   cidr     = "192.168.0.0/16"
 
-  azs                       = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
-  public_subnet_cidr        = ["192.168.0.0/20", "192.168.16.0/20", "192.168.32.0/20"]
-  private_subnet_cidr       = ["192.168.48.0/20", "192.168.64.0/20", "192.168.80.0/20"]
+  azs                 = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
+  public_subnet_cidr  = ["192.168.0.0/20", "192.168.16.0/20", "192.168.32.0/20"]
+  private_subnet_cidr = ["192.168.48.0/20", "192.168.64.0/20", "192.168.80.0/20"]
 
   enable_dns_hostnames      = true
   enable_dns_support        = true
@@ -117,13 +117,13 @@ resource "aws_instance" "baston_host" {
 
   ami                    = data.aws_ami.linux_ami.id
   instance_type          = var.instance_type
-  subnet_id              = module.vpc.public_subnet_id[0]  # ap-northeast-1a
+  subnet_id              = module.vpc.public_subnet_id[0] # ap-northeast-1a
   key_name               = "aws_access"
   vpc_security_group_ids = [aws_security_group.public_sg.id]
 
 
   provisioner "file" {
-    source      = "~/.ssh/aws_access"      # Passing Private-Access key, so that baston_host can ssh to any private_node
+    source      = "~/.ssh/aws_access" # Passing Private-Access key, so that baston_host can ssh to any private_node
     destination = "/tmp/aws_access"
   }
 
@@ -136,7 +136,7 @@ resource "aws_instance" "baston_host" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ec2-user"
-    private_key = file("~/.ssh/aws_access")  # Location of Private-Access key
+    private_key = file("~/.ssh/aws_access") # Location of Private-Access key
     timeout     = "4m"
   }
 
@@ -162,7 +162,7 @@ resource "aws_instance" "private_node" {
 
   ami                    = data.aws_ami.linux_ami.id
   instance_type          = var.instance_type
-  subnet_id              = module.vpc.private_subnet_id[0]  # ap-northeast-1c
+  subnet_id              = module.vpc.private_subnet_id[0] # ap-northeast-1c
   key_name               = "aws_access"
   vpc_security_group_ids = [aws_security_group.private_sg.id]
 
@@ -170,11 +170,3 @@ resource "aws_instance" "private_node" {
     "Name" = "Private_Node"
   }
 }
-
-output "private_node_ip" {
-  value = aws_instance.private_node.private_ip
-}
-
-
-
-

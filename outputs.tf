@@ -46,5 +46,3 @@ output "igw_id" {
 #     for k, v in var.private_subnets : aws_subnet.private[k].id
 #   ]
 # }
-
-

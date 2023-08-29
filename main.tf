@@ -15,7 +15,7 @@ resource "aws_vpc" "this_vpc" {
 }
 
 ############################################################################
-###                          Public Subnet                               ### 
+###                          Public Subnet                               ###
 ############################################################################
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidr)
@@ -32,7 +32,7 @@ resource "aws_subnet" "public" {
 }
 
 ############################################################################
-###                           Private Subnet                             ### 
+###                           Private Subnet                             ###
 ############################################################################
 resource "aws_subnet" "private" {
   count             = length(var.private_subnet_cidr)
@@ -48,7 +48,7 @@ resource "aws_subnet" "private" {
 }
 
 ############################################################################
-###                           Database Subnet                            ### 
+###                           Database Subnet                            ###
 ############################################################################
 resource "aws_subnet" "db_subnet" {
   count             = length(var.db_subnet_cidr)
@@ -64,7 +64,7 @@ resource "aws_subnet" "db_subnet" {
 }
 
 ############################################################################
-###                           Intra Subnet                            ### 
+###                           Intra Subnet                            ###
 ############################################################################
 resource "aws_subnet" "intra_subnet" {
   count             = length(var.intra_subnet_cidr)
@@ -125,7 +125,7 @@ resource "aws_route_table_association" "public_route_table_association" {
 
 ################################ SINGLE NAT ################################
 
-# This configuration will deploy a single NAT gateway on the first public subnet 
+# This configuration will deploy a single NAT gateway on the first public subnet
 
 resource "aws_eip" "single_eip" {
   count  = local.nat_count
