@@ -1,12 +1,17 @@
 locals {
-  vpc_id    = aws_vpc.this_vpc.id
-  nat_count = var.enable_single_nat_gateway == true ? 1 : 0
+  vpc_id         = try(aws_vpc.this_vpc[0].id, null)
+  nat_count      = var.create && var.enable_single_nat_gateway && length(var.public_subnet_cidr) > 0 ? 1 : 0
+  create_public  = var.create && length(var.public_subnet_cidr) > 0
+  create_private = var.create && length(var.private_subnet_cidr) > 0
+  create_intra   = var.create && length(var.intra_subnet_cidr) > 0
+  create_db      = var.create && length(var.db_subnet_cidr) > 0
 }
 
 ############################################################################
 ###                           VPC                                        ###
 ############################################################################
 resource "aws_vpc" "this_vpc" {
+  count                = var.create ? 1 : 0
   cidr_block           = var.cidr
   enable_dns_support   = var.enable_dns_support
   enable_dns_hostnames = var.enable_dns_hostnames
@@ -18,7 +23,7 @@ resource "aws_vpc" "this_vpc" {
 ###                          Public Subnet                               ###
 ############################################################################
 resource "aws_subnet" "public" {
-  count                   = length(var.public_subnet_cidr)
+  count                   = local.create_public ? length(var.public_subnet_cidr) : 0
   vpc_id                  = local.vpc_id
   availability_zone       = var.azs[count.index]
   cidr_block              = var.public_subnet_cidr[count.index]
@@ -35,7 +40,7 @@ resource "aws_subnet" "public" {
 ###                           Private Subnet                             ###
 ############################################################################
 resource "aws_subnet" "private" {
-  count             = length(var.private_subnet_cidr)
+  count             = local.create_private ? length(var.private_subnet_cidr) : 0
   vpc_id            = local.vpc_id
   availability_zone = var.azs[count.index]
   cidr_block        = var.private_subnet_cidr[count.index]
@@ -51,7 +56,7 @@ resource "aws_subnet" "private" {
 ###                           Database Subnet                            ###
 ############################################################################
 resource "aws_subnet" "db_subnet" {
-  count             = length(var.db_subnet_cidr)
+  count             = local.create_db ? length(var.db_subnet_cidr) : 0
   vpc_id            = local.vpc_id
   availability_zone = var.azs[count.index]
   cidr_block        = var.db_subnet_cidr[count.index]
@@ -67,7 +72,7 @@ resource "aws_subnet" "db_subnet" {
 ###                           Intra Subnet                            ###
 ############################################################################
 resource "aws_subnet" "intra_subnet" {
-  count             = length(var.intra_subnet_cidr)
+  count             = local.create_intra ? length(var.intra_subnet_cidr) : 0
   vpc_id            = local.vpc_id
   availability_zone = var.azs[count.index]
   cidr_block        = var.intra_subnet_cidr[count.index]
@@ -83,7 +88,7 @@ resource "aws_subnet" "intra_subnet" {
 ###                            Internet Gateway                          ###
 ############################################################################
 resource "aws_internet_gateway" "igw" {
-
+  count  = local.create_public ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -96,7 +101,7 @@ resource "aws_internet_gateway" "igw" {
 ###                      Route Table for Public Subnet                   ###
 ############################################################################
 resource "aws_route_table" "public_route_table" {
-  count  = length(var.public_subnet_cidr) > 0 ? 1 : 0
+  count  = local.create_public ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -107,14 +112,15 @@ resource "aws_route_table" "public_route_table" {
 
 # Route Configuration for Public Subnets
 resource "aws_route" "public_route_table_route" {
+  count                  = local.create_public ? 1 : 0
   route_table_id         = aws_route_table.public_route_table[0].id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.igw.id
+  gateway_id             = aws_internet_gateway.igw[0].id
 }
 
 # Associate Public Subnets with the Public Route Table
 resource "aws_route_table_association" "public_route_table_association" {
-  count          = length(var.public_subnet_cidr)
+  count          = local.create_public ? length(var.public_subnet_cidr) : 0
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public_route_table[0].id
 }
@@ -153,7 +159,7 @@ resource "aws_nat_gateway" "single_nat_gateway" {
 ############################################################################
 
 resource "aws_route_table" "private_route_table" {
-  count  = length(var.private_subnet_cidr) > 0 ? 1 : 0
+  count  = local.create_private ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -163,7 +169,7 @@ resource "aws_route_table" "private_route_table" {
 }
 
 resource "aws_route_table_association" "private_route_table_association" {
-  count          = length(var.private_subnet_cidr)
+  count          = local.create_private ? length(var.private_subnet_cidr) : 0
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private_route_table[0].id
 }
@@ -181,7 +187,7 @@ resource "aws_route" "private_route_table_route" {
 ############################################################################
 
 resource "aws_route_table" "db_route_table" {
-  count  = length(var.db_subnet_cidr) > 0 ? 1 : 0
+  count  = local.create_db ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -191,7 +197,7 @@ resource "aws_route_table" "db_route_table" {
 }
 
 resource "aws_route_table_association" "db_route_table_association" {
-  count          = length(var.db_subnet_cidr)
+  count          = local.create_db ? length(var.db_subnet_cidr) : 0
   subnet_id      = aws_subnet.db_subnet[count.index].id
   route_table_id = aws_route_table.db_route_table[0].id
 }
@@ -201,7 +207,7 @@ resource "aws_route_table_association" "db_route_table_association" {
 ############################################################################
 
 resource "aws_route_table" "intra_route_table" {
-  count  = length(var.intra_subnet_cidr) > 0 ? 1 : 0
+  count  = local.create_intra ? 1 : 0
   vpc_id = local.vpc_id
 
   tags = merge(
@@ -211,7 +217,7 @@ resource "aws_route_table" "intra_route_table" {
 }
 
 resource "aws_route_table_association" "intra_route_table_association" {
-  count          = length(var.intra_subnet_cidr)
+  count          = local.create_intra ? length(var.intra_subnet_cidr) : 0
   subnet_id      = aws_subnet.intra_subnet[count.index].id
   route_table_id = aws_route_table.intra_route_table[0].id
 }

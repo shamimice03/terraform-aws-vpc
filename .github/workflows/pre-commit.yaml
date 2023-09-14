@@ -39,6 +39,10 @@ jobs:
        uses: clowdhaus/terraform-min-max@v1.2.4
        with:
          directory: ${{ matrix.directory }}
+     - name: Dummy Key File
+       run: |
+        sudo mkdir ~/.ssh
+        sudo touch ~/.ssh/aws_access
      - name: pre-commit on TF ${{ steps.minMax.outputs.minVersion }}
         # except root directory
        if: matrix.directory != '.'
@@ -66,6 +70,10 @@ jobs:
        with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
+     - name: Dummy Key File
+       run: |
+        sudo mkdir ~/.ssh
+        sudo touch ~/.ssh/aws_access
      - name: find out min and max versions
        id: minMax
        uses: clowdhaus/terraform-min-max@v1.2.4

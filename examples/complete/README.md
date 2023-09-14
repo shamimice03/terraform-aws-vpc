@@ -1,4 +1,13 @@
-# EC2-instances on your VPC
+# Provision `EC2-instances` on your VPC
+
+## Note:
+
+`Prerequisite` to perform this example on your machine:
+1. Generate `key-pair` using AWS Console UI.
+2. Download the `private-key` file.
+3. Place the `private-key` on `~/.ssh/private_key` location. [example: `~/.ssh/aws_access`]
+
+## Resources:
 
 ### VPC (Virtual Private Cloud)
 
@@ -40,7 +49,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.14.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.16.2 |
 
 ## Modules
 
