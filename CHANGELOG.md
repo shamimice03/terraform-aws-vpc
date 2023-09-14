@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.2.1](https://github.com/shamimice03/terraform-aws-vpc/compare/v1.2.0...v1.2.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* **docs:** fixed docs typos ([e465ddd](https://github.com/shamimice03/terraform-aws-vpc/commit/e465ddda4524ac70f1eaf40a03c6d6d03931233a))
+* **docs:** fixed docs typos ([680db0c](https://github.com/shamimice03/terraform-aws-vpc/commit/680db0c29b80dde45ca3bacd1c0b8e3951ccd257))
+* **docs:** fixed docs typos ([050bbae](https://github.com/shamimice03/terraform-aws-vpc/commit/050bbaea26b9dcc5860146bff8a5a228418e56d7))
+
 ## [1.2.0](https://github.com/shamimice03/terraform-aws-vpc/compare/v1.1.0...v1.2.0) (2023-09-14)
 
 
