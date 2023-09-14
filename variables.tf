@@ -1,5 +1,5 @@
 variable "create" {
-  description = "DeterControls if VPC should be created"
+  description = "Controls if VPC should be created or not"
   type        = bool
   default     = true
 }
