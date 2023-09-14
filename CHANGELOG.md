@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0](https://github.com/shamimice03/terraform-aws-vpc/compare/v1.1.0...v1.2.0) (2023-09-14)
+
+
+### Features
+
+* **create-option:** a new feature added. ([cf73052](https://github.com/shamimice03/terraform-aws-vpc/commit/cf73052de033b3d50044cae6d45715f24f242dd6)), closes [#7](https://github.com/shamimice03/terraform-aws-vpc/issues/7)
+* **create-option:** a new feature added. ([8538e3b](https://github.com/shamimice03/terraform-aws-vpc/commit/8538e3bd3a2c0d6e9019aa12d4ed8b073e98f6a2))
+* **create-option:** a new feature added. ([f613a73](https://github.com/shamimice03/terraform-aws-vpc/commit/f613a73011fb1fa1a0a66fb744d24bdc7eb0e2ba))
+* **create-option:** a new feature added. ([db39bfd](https://github.com/shamimice03/terraform-aws-vpc/commit/db39bfd005833baf69b112b78eb57778a97f3518))
+* **create-option:** a new feature added. ([f4b0016](https://github.com/shamimice03/terraform-aws-vpc/commit/f4b00166dfc201ec18a6740472336ff9ddc99ebb))
+* **create-option:** a new feature added. ([e4c93ce](https://github.com/shamimice03/terraform-aws-vpc/commit/e4c93ce01fb3000c2f87a0825ee4b711b025f6ed))
+
 ## [1.1.0](https://github.com/shamimice03/terraform-aws-vpc/compare/v1.0.6...v1.1.0) (2023-08-29)
 
 
