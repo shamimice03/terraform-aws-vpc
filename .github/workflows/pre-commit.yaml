@@ -41,7 +41,7 @@ jobs:
          directory: ${{ matrix.directory }}
      - name: Dummy Key File
        run: |
-        ls ~/.ssh 
+        sudo mkdir ~/.ssh
         sudo touch ~/.ssh/aws_access
      - name: pre-commit on TF ${{ steps.minMax.outputs.minVersion }}
         # except root directory
