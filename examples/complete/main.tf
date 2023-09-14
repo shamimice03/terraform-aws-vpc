@@ -1,6 +1,8 @@
 module "vpc" {
   source = "../../"
 
+  create = true
+
   vpc_name = "webapp_dev_vpc"
   cidr     = "192.168.0.0/16"
 
