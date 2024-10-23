@@ -40,7 +40,7 @@ module "vpc" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.16.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.72.1 |
 
 ## Modules
 
@@ -90,13 +90,29 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_db_subnet_id"></a> [db\_subnet\_id](#output\_db\_subnet\_id) | DB Subnet ID's |
-| <a name="output_igw_id"></a> [igw\_id](#output\_igw\_id) | Internet Gateway ID's |
-| <a name="output_intra_subnet_id"></a> [intra\_subnet\_id](#output\_intra\_subnet\_id) | DB Subnet ID's |
-| <a name="output_private_subnet_id"></a> [private\_subnet\_id](#output\_private\_subnet\_id) | Private Subnet ID's |
-| <a name="output_public_subnet_id"></a> [public\_subnet\_id](#output\_public\_subnet\_id) | Public Subnet ID's |
+| <a name="output_database_route_table_id"></a> [database\_route\_table\_id](#output\_database\_route\_table\_id) | ID of the database route table |
+| <a name="output_database_subnet_arn"></a> [database\_subnet\_arn](#output\_database\_subnet\_arn) | List of ARNs of database subnets |
+| <a name="output_database_subnet_cidr"></a> [database\_subnet\_cidr](#output\_database\_subnet\_cidr) | List of CIDR blocks of database subnets |
+| <a name="output_database_subnet_id"></a> [database\_subnet\_id](#output\_database\_subnet\_id) | List of IDs of database subnets |
+| <a name="output_igw_arn"></a> [igw\_arn](#output\_igw\_arn) | The ARN of the Internet Gateway |
+| <a name="output_igw_id"></a> [igw\_id](#output\_igw\_id) | The ID of the Internet Gateway |
+| <a name="output_intra_route_table_id"></a> [intra\_route\_table\_id](#output\_intra\_route\_table\_id) | ID of the intra route table |
+| <a name="output_intra_subnet_arn"></a> [intra\_subnet\_arn](#output\_intra\_subnet\_arn) | List of ARNs of intra subnets |
+| <a name="output_intra_subnet_cidr"></a> [intra\_subnet\_cidr](#output\_intra\_subnet\_cidr) | List of CIDR blocks of intra subnets |
+| <a name="output_intra_subnet_id"></a> [intra\_subnet\_id](#output\_intra\_subnet\_id) | List of IDs of intra subnets |
+| <a name="output_nat_gateway_id"></a> [nat\_gateway\_id](#output\_nat\_gateway\_id) | The ID of the NAT Gateway |
+| <a name="output_nat_gateway_public_ip"></a> [nat\_gateway\_public\_ip](#output\_nat\_gateway\_public\_ip) | The public IP address of the NAT Gateway |
+| <a name="output_private_route_table_id"></a> [private\_route\_table\_id](#output\_private\_route\_table\_id) | ID of the private route table |
+| <a name="output_private_subnet_arn"></a> [private\_subnet\_arn](#output\_private\_subnet\_arn) | List of ARNs of private subnets |
+| <a name="output_private_subnet_cidr"></a> [private\_subnet\_cidr](#output\_private\_subnet\_cidr) | List of CIDR blocks of private subnets |
+| <a name="output_private_subnet_id"></a> [private\_subnet\_id](#output\_private\_subnet\_id) | List of IDs of private subnets |
+| <a name="output_public_route_table_id"></a> [public\_route\_table\_id](#output\_public\_route\_table\_id) | ID of the public route table |
+| <a name="output_public_subnet_arn"></a> [public\_subnet\_arn](#output\_public\_subnet\_arn) | List of ARNs of public subnets |
+| <a name="output_public_subnet_cidr"></a> [public\_subnet\_cidr](#output\_public\_subnet\_cidr) | List of CIDR blocks of public subnets |
+| <a name="output_public_subnet_id"></a> [public\_subnet\_id](#output\_public\_subnet\_id) | List of IDs of public subnets |
+| <a name="output_vpc_arn"></a> [vpc\_arn](#output\_vpc\_arn) | The ARN of the VPC |
 | <a name="output_vpc_cidr_block"></a> [vpc\_cidr\_block](#output\_vpc\_cidr\_block) | The CIDR block of the VPC |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | ID of the VPC |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ***
