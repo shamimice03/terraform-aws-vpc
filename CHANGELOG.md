@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.2.3](https://github.com/shamimice03/terraform-aws-vpc/compare/v1.2.2...v1.2.3) (2025-01-04)
+
+
+### Bug Fixes
+
+* **docs:** fixed docs ([6c119b8](https://github.com/shamimice03/terraform-aws-vpc/commit/6c119b8a73fbf6e375267cb98b7d907efbffd912))
+* **docs:** fixed docs ([c28bc01](https://github.com/shamimice03/terraform-aws-vpc/commit/c28bc01d6b64b11508103fcf25a83fed508bfe43))
+* **route table issue of nat gateway:** fixed route table issue of nat gateway ([931f6ea](https://github.com/shamimice03/terraform-aws-vpc/commit/931f6eae11973f5cae0f6b1f4afd0f51fc0a470f))
+* **route table issue of nat gateway:** fixed route table issue of nat gateway ([27acafa](https://github.com/shamimice03/terraform-aws-vpc/commit/27acafa258ed9fd66b1b5eea929265b0bfd25299))
+
 ### [1.2.1](https://github.com/shamimice03/terraform-aws-vpc/compare/v1.2.0...v1.2.1) (2023-09-14)
 
 
